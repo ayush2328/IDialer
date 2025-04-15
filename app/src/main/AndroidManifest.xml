@@ -314,6 +314,14 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receivers.LegacyCallReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+
         <activity-alias
             android:name=".activities.SplashActivity.Original"
             android:enabled="true"
