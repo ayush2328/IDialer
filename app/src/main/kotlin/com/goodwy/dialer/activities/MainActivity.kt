@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -25,6 +26,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.ScrollingView
 import androidx.core.view.updateLayoutParams
@@ -53,6 +55,7 @@ import com.goodwy.dialer.fragments.MyViewPagerFragment
 import com.goodwy.dialer.fragments.RecentsFragment
 import com.goodwy.dialer.helpers.*
 import com.goodwy.dialer.models.Events
+import com.goodwy.dialer.services.CallHandlingService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -95,6 +98,12 @@ class MainActivity : SimpleActivity() {
 
         if (isDefaultDialer()) {
             checkContactPermissions()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val serviceIntent = Intent(this, CallHandlingService::class.java)
+                ContextCompat.startForegroundService(this, serviceIntent)
+            }
+
 
             if (!config.wasOverlaySnackbarConfirmed && !Settings.canDrawOverlays(this)) {
                 val snackbar = Snackbar.make(binding.mainHolder, R.string.allow_displaying_over_other_apps, Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok) {
