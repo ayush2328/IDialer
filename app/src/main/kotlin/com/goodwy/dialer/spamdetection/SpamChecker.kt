@@ -9,11 +9,12 @@ import retrofit2.Response
 
 object SpamChecker {
     fun check(number: String, context: Context, onResult: (Boolean) -> Unit) {
-        val request = PhoneRequest(number)
+        val request = PhoneRequest(phone_number = number)
         ApiClient.spamApi.checkSpam(request).enqueue(object : Callback<SpamResponse> {
             override fun onResponse(call: Call<SpamResponse>, response: Response<SpamResponse>) {
                 if (response.isSuccessful) {
-                    val isSpam = response.body()?.spam ?: false
+                    val prediction = response.body()?.prediction ?: 0
+                    val isSpam = prediction == 1
                     Log.d("SpamChecker", "Result: $number isSpam=$isSpam")
                     onResult(isSpam)
                 } else {
@@ -24,9 +25,8 @@ object SpamChecker {
 
             override fun onFailure(call: Call<SpamResponse>, t: Throwable) {
                 Log.e("SpamChecker", "API Error: ${t.message}")
-                onResult(false) // fail safe
+                onResult(false)
             }
         })
     }
-
 }

@@ -16,10 +16,12 @@ import android.net.Uri
 import android.os.*
 import android.telecom.Call
 import android.telecom.CallAudioState
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
@@ -78,9 +80,9 @@ class CallActivity : SimpleActivity() {
     /**
      * For spam detection
      */
-    val number = intent.getStringExtra("number") ?: "Unknown"
-    val source = intent.getStringExtra("source") ?: "Unknown"
-    val isSpam = intent.getBooleanExtra("isSpam", false)
+    private var number: String = "Unknown"
+    private var source: String = "Unknown"
+    private var isSpam: Boolean = false
 
     @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
@@ -91,8 +93,17 @@ class CallActivity : SimpleActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+
+        // ✅ Now initialize extras
+        number = intent?.getStringExtra("number") ?: "Unknown"
+        source = intent?.getStringExtra("source") ?: "Unknown"
+        isSpam = intent?.getBooleanExtra("isSpam", false) ?: false
+
+        Log.d("CallActivity", "Number: $number, Source: $source, Spam: $isSpam")
+
         // Disable accept calling on spam call
         if (isSpam) {
+            Toast.makeText(this, "This call is a spam call", Toast.LENGTH_SHORT).show()
             binding.callAccept.isEnabled = false
             binding.callAccept.alpha = 0.4f
         }

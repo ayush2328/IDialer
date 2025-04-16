@@ -9,5 +9,5 @@ interface SpamApi {
     fun checkSpam(@Body number: PhoneRequest): Call<SpamResponse>
 }
 
-data class PhoneRequest(val number: String)
-data class SpamResponse(val spam: Boolean)
+data class PhoneRequest(val phone_number: String)
+data class SpamResponse(val prediction: Int, val result: String)
