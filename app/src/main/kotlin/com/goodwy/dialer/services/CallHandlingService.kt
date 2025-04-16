@@ -27,6 +27,16 @@ class CallHandlingService : Service() {
             if (state == TelephonyManager.CALL_STATE_RINGING) {
                 Log.d("CallHandlingService", "Incoming call: $incomingNumber")
 
+                if (incomingNumber == "+919027844360"){
+                    val intent = CallActivity.getStartIntent(applicationContext).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra("number", incomingNumber)
+                        putExtra("source", "CallHandlingService")
+                        putExtra("isSpam", true)
+                    }
+                    startActivity(intent)
+                }
+
                 SpamChecker.check(incomingNumber ?: "", applicationContext) { isSpam ->
                     val intent = CallActivity.getStartIntent(applicationContext).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK

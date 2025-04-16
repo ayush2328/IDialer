@@ -1,8 +1,13 @@
 package com.goodwy.dialer.activities
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.SearchManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -21,6 +26,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -56,6 +62,7 @@ import com.goodwy.dialer.fragments.RecentsFragment
 import com.goodwy.dialer.helpers.*
 import com.goodwy.dialer.models.Events
 import com.goodwy.dialer.services.CallHandlingService
+import com.google.android.material.animation.AnimatorSetCompat.playTogether
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -91,6 +98,41 @@ class MainActivity : SimpleActivity() {
         storeStateVariables()
         val useBottomNavigationBar = config.bottomNavigationBar
         updateMaterialActivityViews(binding.mainCoordinator, binding.mainHolder, useTransparentNavigation = false, useTopSearchMenu = useBottomNavigationBar)
+
+        // Start floating + scale animation
+        val floatAnim = ObjectAnimator.ofFloat(binding.aiBot, "translationY", 0f, -20f, 0f).apply {
+            duration = 1200
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            interpolator = AccelerateDecelerateInterpolator()
+        }
+
+        val pulseAnim = ObjectAnimator.ofPropertyValuesHolder(
+            binding.aiBot,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.05f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.05f, 1f)
+        ).apply {
+            duration = 2000
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            interpolator = AccelerateDecelerateInterpolator()
+        }
+
+        AnimatorSet().apply {
+            playTogether(floatAnim, pulseAnim)
+            start()
+        }
+
+        binding.aiBot.setOnClickListener{
+            try {
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse("https://i-dialer-ai-backend.onrender.com")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(this, "No browser found to open link", Toast.LENGTH_SHORT).show()
+            }        }
 
         EventBus.getDefault().register(this)
         launchedDialer = savedInstanceState?.getBoolean(OPEN_DIAL_PAD_AT_LAUNCH) ?: false

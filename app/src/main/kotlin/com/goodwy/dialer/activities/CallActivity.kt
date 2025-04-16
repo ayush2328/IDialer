@@ -1,6 +1,7 @@
 package com.goodwy.dialer.activities
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.KeyguardManager
 import android.app.WallpaperManager
 import android.content.Context
@@ -103,7 +104,7 @@ class CallActivity : SimpleActivity() {
 
         // Disable accept calling on spam call
         if (isSpam) {
-            Toast.makeText(this, "This call is a spam call", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Dalla h sala!", Toast.LENGTH_LONG).show()
             binding.callAccept.isEnabled = false
             binding.callAccept.alpha = 0.4f
         }
@@ -283,6 +284,10 @@ class CallActivity : SimpleActivity() {
         }
     }
 
+
+
+
+
     @SuppressLint("MissingPermission")
     private fun initOutgoingCall(callNumber: Uri) {
         try {
@@ -313,7 +318,6 @@ class CallActivity : SimpleActivity() {
         super.onDestroy()
         CallManager.removeListener(callCallback)
         disableProximitySensor()
-
         if (isOreoMr1Plus()) {
             setShowWhenLocked(false)
             setTurnScreenOn(false)
