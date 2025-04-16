@@ -8,6 +8,7 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import com.goodwy.dialer.activities.CallActivity
 
+@Suppress("DEPRECATION")
 class LegacyCallReceiver : BroadcastReceiver() {
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {
@@ -16,11 +17,16 @@ class LegacyCallReceiver : BroadcastReceiver() {
             val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
             Log.d("LegacyCallReceiver", "Incoming call from: $incomingNumber")
 
-            // Start your call UI or spam check here
-            context.startActivity(CallActivity.getStartIntent(context).apply {
+
+            // Start your call UI with spam check here
+
+            val intent = CallActivity.getStartIntent(context).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 putExtra("number", incomingNumber)
-            })
+                putExtra("source", "LegacyReceiver")
+                putExtra("isSpam", false) // Legacy check can't detect spam here
+            }
+            context.startActivity(intent)
         }
     }
 }

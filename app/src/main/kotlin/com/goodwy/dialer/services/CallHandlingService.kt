@@ -1,5 +1,6 @@
 package com.goodwy.dialer.services
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -13,10 +14,12 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.goodwy.dialer.R
 import com.goodwy.dialer.activities.CallActivity
+import com.goodwy.dialer.spamdetection.SpamChecker
 
 @Suppress("DEPRECATION")
 class CallHandlingService : Service() {
 
+    private var putextra = "number"
     private lateinit var telephonyManager: TelephonyManager
 
     private val phoneStateListener = object : PhoneStateListener() {
@@ -24,12 +27,16 @@ class CallHandlingService : Service() {
             if (state == TelephonyManager.CALL_STATE_RINGING) {
                 Log.d("CallHandlingService", "Incoming call: $incomingNumber")
 
-                // Show custom call screen or spam check logic
-                val intent = CallActivity.getStartIntent(applicationContext).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra("number", incomingNumber)
+                SpamChecker.check(incomingNumber ?: "", applicationContext) { isSpam ->
+                    val intent = CallActivity.getStartIntent(applicationContext).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra("number", incomingNumber)
+                        putExtra("source", "CallHandlingService")
+                        putExtra("isSpam", isSpam)
+                    }
+                    startActivity(intent)
                 }
-                startActivity(intent)
+
             }
         }
     }

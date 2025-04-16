@@ -7,22 +7,24 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-object checkIfNumberIsSpam {
-    fun checkIfNumberIsSpam(number: String, context: Context){
+object SpamChecker {
+    fun check(number: String, context: Context, onResult: (Boolean) -> Unit) {
         val request = PhoneRequest(number)
         ApiClient.spamApi.checkSpam(request).enqueue(object : Callback<SpamResponse> {
             override fun onResponse(call: Call<SpamResponse>, response: Response<SpamResponse>) {
                 if (response.isSuccessful) {
                     val isSpam = response.body()?.spam ?: false
-                    if (isSpam) {
-                        Toast.makeText(context, "⚠️ Spam Number Detected!", Toast.LENGTH_LONG).show()
-                        // Handle blocking or UI alert
-                    }
+                    Log.d("SpamChecker", "Result: $number isSpam=$isSpam")
+                    onResult(isSpam)
+                } else {
+                    Log.e("SpamChecker", "API failed: ${response.errorBody()?.string()}")
+                    onResult(false)
                 }
             }
 
             override fun onFailure(call: Call<SpamResponse>, t: Throwable) {
-                Log.e("SpamCheck", "Error: ${t.message}")
+                Log.e("SpamChecker", "API Error: ${t.message}")
+                onResult(false) // fail safe
             }
         })
     }

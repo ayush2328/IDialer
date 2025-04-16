@@ -75,6 +75,13 @@ class CallActivity : SimpleActivity() {
 
     private var audioRouteChooserDialog: DynamicBottomSheetChooserDialog? = null
 
+    /**
+     * For spam detection
+     */
+    val number = intent.getStringExtra("number") ?: "Unknown"
+    val source = intent.getStringExtra("source") ?: "Unknown"
+    val isSpam = intent.getBooleanExtra("isSpam", false)
+
     @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +90,12 @@ class CallActivity : SimpleActivity() {
         updateNavigationBarColor = false
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        // Disable accept calling on spam call
+        if (isSpam) {
+            binding.callAccept.isEnabled = false
+            binding.callAccept.alpha = 0.4f
+        }
 
         if (CallManager.getPhoneState() == NoCall) {
             finish()
