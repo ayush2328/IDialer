@@ -11,24 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_marginTop="80dp"
-        android:id="@+id/ai_bot"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        app:cardElevation="6dp"
-        android:layout_margin="10dp"
-        app:strokeWidth="0dp"
-        app:cardCornerRadius="32dp">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/icon_ai_bot"
-            tools:ignore="ContentDescription" />
-    </com.google.android.material.card.MaterialCardView>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_holder"
@@ -37,6 +19,8 @@
         android:fillViewport="true"
         android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
 
         <RelativeLayout
             android:id="@+id/mainTopTabsContainer"
@@ -91,6 +75,27 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/mainTabsHolder"
             app:layout_constraintTop_toBottomOf="@+id/mainTopTabsContainer"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/ai_bot"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toTopOf="@+id/main_dialpad_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="10dp"
+            app:strokeWidth="0dp"
+            app:cardCornerRadius="32dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_ai_bot"
+                tools:ignore="ContentDescription" />
+        </com.google.android.material.card.MaterialCardView>
+
 
         <com.goodwy.commons.views.MyFloatingActionButton
             android:id="@+id/main_dialpad_button"

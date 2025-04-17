@@ -44,14 +44,14 @@
         android:icon="@drawable/ic_show_block"
         android:title="@string/blocked_numbers"
         app:showAsAction="never" />
-    <item
+  <!--  <item
         android:id="@+id/settings"
         android:title="@string/settings"
         android:icon="@drawable/ic_settings_cog_vector"
-        app:showAsAction="never"/>
-    <item
+        app:showAsAction="never"/>-->
+   <!-- <item
         android:id="@+id/about"
         android:icon="@drawable/ic_info_vector"
         android:title="@string/about"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 </menu>
